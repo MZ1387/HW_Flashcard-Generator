@@ -70,25 +70,37 @@ function writeCards(writeThis) {
     });
 }
 
-// BasicCard constructor function
-function BasicCard(question, answer) {
-    this.question = question.toLowerCase();
-    this.answer = answer.toLowerCase();
+// runs inquirer confirm to repeat or end card review
+function repeatCards() {
+    inquirer.prompt([{
+        type: "confirm",
+        name: "repeat",
+        message: "Would you like to review your cards again?",
+    }]).then(function(result) {
+        if (result.repeat) {
+            // reset variables and review cards again
+            count = 0;
+            score = 0;
+            switch (runThis) {
+                case "basic":
+                    studyBasic();
+                    break;
+                case "cloze":
+                    studyCloze();
+            }
+        } else {
+            console.log("--------------------------------------------");
+            console.log("See you soon.");
+            console.log("--------------------------------------------");
+        }
+    });
 }
 
 // ClozeCard constructor function
 function ClozeCard(question, answer) {
     this.question = question.toLowerCase();
     this.answer = answer.toLowerCase();
-
-    if (this.question.indexOf(this.answer) != -1) {
-        this.cloze = this.question.replace(answer, "...");
-    } else {
-        console.log("--------------------------------------------");
-        console.log("Cloze deletion was not input correctly. \nYou must include a phrase found in the question.");
-        console.log("--------------------------------------------");
-        this.cloze = "Cloze deletion was not input correctly. \nCreate a new card for this question. Press ENTER.";
-    }
+    this.cloze = this.question.replace(answer, "...");
 }
 
 // function creates new cloze cards with inquirer.prompt using recurssion
@@ -101,7 +113,6 @@ function clozeCard() {
     }
 
     if (count < cardCount) {
-
         inquirer.prompt([{
             name: "question",
             message: "Question: "
@@ -109,12 +120,20 @@ function clozeCard() {
             name: "answer",
             message: "Omit: "
         }]).then(function(answers) {
-            // create a new card instance which is pushed to cards array
-            var newCard = new ClozeCard(answers.question, answers.answer);
-            console.log("--------------------------------------------");
-            cards.push(newCard);
-            count++;
-            clozeCard();
+            // create a new card instance which is pushed to cards array is cloze is proper
+            if (answers.question.indexOf(answers.answer) != -1) {
+                var newCard = new ClozeCard(answers.question, answers.answer);
+                cards.push(newCard);
+                console.log("--------------------------------------------");
+                count++;
+                clozeCard();
+            } else {
+                console.log("--------------------------------------------");
+                console.log("Cloze deletion was not input correctly. \nYou must include a phrase found in the question.");
+                console.log("--------------------------------------------");
+                count++;
+                clozeCard();
+            }
         });
     } else {
         count = 0;
@@ -125,21 +144,29 @@ function clozeCard() {
 
 // function reads back cards set in cloze.JSON
 function studyCloze() {
+    // if cards have been input correctly then we can study cards
+    if (count === 0 && cards.length != 0) {
+        console.log("--------------------------------------------");
+        console.log("Let's review!");
+        console.log("--------------------------------------------");
+        // set in case the cloze was not input correctly. This avoids 'index out of range'
+        cardCount = cards.length
+    } else if (count === 0 && cards.length === 0) {
+        console.log("--------------------------------------------");
+        console.log("Cloze cards were not created properly. \nCreate some new cards to study.");
+        console.log("--------------------------------------------");
+    }
 
     if (count < cardCount) {
-
         inquirer.prompt([{
             type: "input",
             name: "userResponse",
             message: cards[count].cloze,
         }]).then(function(result) {
-
             if (result.userResponse.toLowerCase() === cards[count].answer) {
                 score++;
                 console.log("--------------------------------------------");
                 console.log("Correct! " + "'" + cards[count].question + "'");
-                console.log("--------------------------------------------");
-            } else if (result.userResponse === "") {
                 console.log("--------------------------------------------");
             } else {
                 console.log("--------------------------------------------");
@@ -153,7 +180,14 @@ function studyCloze() {
         console.log("--------------------------------------------");
         console.log("No cards left! \nYou got " + score + " out of " + cardCount + " correct.");
         console.log("--------------------------------------------");
+        repeatCards();
     }
+}
+
+// BasicCard constructor function
+function BasicCard(question, answer) {
+    this.question = question.toLowerCase();
+    this.answer = answer.toLowerCase();
 }
 
 // function creates new basic cards with inquirer.prompt using recurssion
@@ -166,7 +200,6 @@ function basicCard() {
     }
 
     if (count < cardCount) {
-
         inquirer.prompt([{
             name: "question",
             message: "Question: "
@@ -191,14 +224,18 @@ function basicCard() {
 // function reads back cards set in basic.JSON
 function studyBasic() {
 
-    if (count < cardCount) {
+    if (count === 0) {
+        console.log("--------------------------------------------");
+        console.log("Let's review!");
+        console.log("--------------------------------------------");
+    }
 
+    if (count < cardCount) {
         inquirer.prompt([{
             type: "input",
             name: "userResponse",
             message: cards[count].question,
         }]).then(function(result) {
-
             if (result.userResponse.toLowerCase() === cards[count].answer) {
                 score++;
                 console.log("--------------------------------------------");
@@ -216,5 +253,6 @@ function studyBasic() {
         console.log("--------------------------------------------");
         console.log("No cards left! \nYou got " + score + " out of " + cardCount + " correct.");
         console.log("--------------------------------------------");
+        repeatCards();
     }
 }

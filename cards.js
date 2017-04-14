@@ -1,13 +1,14 @@
+// required packages
 var fs = require("fs");
 var inquirer = require("inquirer");
-
+// variables used to hold data and count
 var runThis = process.argv[2];
 var cardCount;
 var count = 0;
 var cards = [];
 var score = 0;
 
-
+//switch statement used to run the desired function set by user
 switch (runThis) {
     case "basic":
         if (process.argv[3]) {
@@ -42,6 +43,7 @@ function intro() {
     console.log("--------------------------------------------");
 }
 
+// function reads cards from the respective .JSON file and pushes data to cards array and runs the study function
 function readCards(readThis) {
     fs.readFile(readThis, "utf8", function(error, data) {
         var cardsObj = JSON.parse(data);
@@ -59,6 +61,7 @@ function readCards(readThis) {
     });
 }
 
+// function writes data to a .JSON file once user has finished creating all cards
 function writeCards(writeThis) {
     fs.writeFile(writeThis, '{ "cards":' + JSON.stringify(cards) + '}', function(err) {
         if (err) {
@@ -86,9 +89,9 @@ function ClozeCard(question, answer) {
         console.log("--------------------------------------------");
         this.cloze = "Cloze deletion was not input correctly. \nCreate a new card for this question. Press ENTER.";
     }
-
 }
 
+// function creates new cloze cards with inquirer.prompt using recurssion
 function clozeCard() {
 
     if (count === 0) {
@@ -106,14 +109,13 @@ function clozeCard() {
             name: "answer",
             message: "Omit: "
         }]).then(function(answers) {
-
+            // create a new card instance which is pushed to cards array
             var newCard = new ClozeCard(answers.question, answers.answer);
             console.log("--------------------------------------------");
             cards.push(newCard);
             count++;
             clozeCard();
         });
-
     } else {
         count = 0;
         writeCards("cloze.json")
@@ -121,6 +123,7 @@ function clozeCard() {
     }
 };
 
+// function reads back cards set in cloze.JSON
 function studyCloze() {
 
     if (count < cardCount) {
@@ -145,18 +148,15 @@ function studyCloze() {
             }
             count++;
             studyCloze();
-
         });
-
     } else {
         console.log("--------------------------------------------");
         console.log("No cards left! \nYou got " + score + " out of " + cardCount + " correct.");
         console.log("--------------------------------------------");
     }
-
 }
 
-
+// function creates new basic cards with inquirer.prompt using recurssion
 function basicCard() {
 
     if (count === 0) {
@@ -174,14 +174,13 @@ function basicCard() {
             name: "answer",
             message: "Answer: "
         }]).then(function(answers) {
-
+            // create a new card instance which is pushed to cards array
             var newCard = new BasicCard(answers.question, answers.answer);
             console.log("--------------------------------------------");
             cards.push(newCard);
             count++;
             basicCard();
         });
-
     } else {
         count = 0;
         writeCards("basic.json")
@@ -189,7 +188,7 @@ function basicCard() {
     }
 };
 
-
+// function reads back cards set in basic.JSON
 function studyBasic() {
 
     if (count < cardCount) {
@@ -210,16 +209,12 @@ function studyBasic() {
                 console.log("Sorry. The correct answer is " + "'" + cards[count].answer + "'");
                 console.log("--------------------------------------------");
             }
-
             count++;
             studyBasic();
-
         });
-
     } else {
         console.log("--------------------------------------------");
         console.log("No cards left! \nYou got " + score + " out of " + cardCount + " correct.");
         console.log("--------------------------------------------");
     }
-
 }

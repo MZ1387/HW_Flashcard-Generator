@@ -1,1 +1,1 @@
-{ "cards":[{"question":"i love lucy","answer":"love","cloze":"i ... lucy"},{"question":"boy meets world","answer":"meets","cloze":"boy ... world"},{"question":"seinfeld","answer":"feld","cloze":"sein..."},{"question":"curb your enthusiasm","answer":"enthusiasm","cloze":"curb your ..."}]}
+{ "cards":[{"question":"i love lucy","answer":"lucy","cloze":"i love ..."},{"question":"i love you","answer":"myself","cloze":"Cloze deletion was not input correctly. \nCreate a new card for this question. Press ENTER."}]}

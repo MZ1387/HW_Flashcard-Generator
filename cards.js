@@ -77,15 +77,24 @@ function BasicCard(question, answer) {
 function ClozeCard(question, answer) {
     this.question = question.toLowerCase();
     this.answer = answer.toLowerCase();
-    this.cloze = this.question.replace(answer, "...");
+
+    if (this.question.indexOf(this.answer) != -1) {
+        this.cloze = this.question.replace(answer, "...");
+    } else {
+        console.log("--------------------------------------------");
+        console.log("Cloze deletion was not input correctly. \nYou must include a phrase found in the question.");
+        console.log("--------------------------------------------");
+        this.cloze = "Cloze deletion was not input correctly. \nCreate a new card for this question. Press ENTER.";
+    }
+
 }
 
 function clozeCard() {
 
-    if(count === 0) {
-      console.log("--------------------------------------------");
-      console.log("Let's create some cards!");
-      console.log("--------------------------------------------");
+    if (count === 0) {
+        console.log("--------------------------------------------");
+        console.log("Let's create some cards!");
+        console.log("--------------------------------------------");
     }
 
     if (count < cardCount) {
@@ -127,12 +136,13 @@ function studyCloze() {
                 console.log("--------------------------------------------");
                 console.log("Correct! " + "'" + cards[count].question + "'");
                 console.log("--------------------------------------------");
+            } else if (result.userResponse === "") {
+                console.log("--------------------------------------------");
             } else {
                 console.log("--------------------------------------------");
                 console.log("Sorry. The correct answer is \n" + "'" + cards[count].question + "'");
                 console.log("--------------------------------------------");
             }
-
             count++;
             studyCloze();
 
@@ -149,10 +159,10 @@ function studyCloze() {
 
 function basicCard() {
 
-    if(count === 0) {
-      console.log("--------------------------------------------");
-      console.log("Let's create some cards!");
-      console.log("--------------------------------------------");
+    if (count === 0) {
+        console.log("--------------------------------------------");
+        console.log("Let's create some cards!");
+        console.log("--------------------------------------------");
     }
 
     if (count < cardCount) {

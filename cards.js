@@ -33,11 +33,11 @@ switch (runThis) {
 // function shows user how to use application
 function intro() {
     console.log("--------------------------------------------");
-    console.log("If you want to review your study cards enter the following:");
+    console.log("If you want to review cards enter the following:");
     console.log("Basic: node cards.js basic");
     console.log("Cloze: node cards.js cloze");
     console.log("--------------------------------------------");
-    console.log("If you want to create your study cards enter the following:");
+    console.log("If you want to create cards enter the following:");
     console.log("Basic: node cards.js basic [amount of cards]");
     console.log("Cloze: node cards.js cloze [amount of cards]");
     console.log("--------------------------------------------");

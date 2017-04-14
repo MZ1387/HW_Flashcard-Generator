@@ -2,8 +2,7 @@ var fs = require("fs");
 var inquirer = require("inquirer");
 
 var runThis = process.argv[2];
-var cardCount = process.argv[3];
-var locked = false;
+var cardCount;
 var count = 0;
 var cards = [];
 var score = 0;
@@ -11,21 +10,19 @@ var score = 0;
 
 switch (runThis) {
     case "basic":
-        if (cardCount) {
+        if (process.argv[3]) {
+            cardCount = process.argv[3];
             basicCard();
         } else {
-            locked = true;
             readCards("basic.json");
-            studyBasic();
         }
         break;
     case "cloze":
-        if (cardCount) {
+        if (process.argv[3]) {
+            cardCount = process.argv[3];
             clozeCard();
         } else {
-            locked = true;
             readCards("cloze.json");
-            studyCloze();
         }
         break;
     default:
@@ -35,11 +32,11 @@ switch (runThis) {
 // function shows user how to use application
 function intro() {
     console.log("--------------------------------------------");
-    console.log("If you want to study cards enter the following:");
+    console.log("If you want to review your study cards enter the following:");
     console.log("Basic: node cards.js basic");
     console.log("Cloze: node cards.js cloze");
     console.log("--------------------------------------------");
-    console.log("If you want to create cards enter the following:");
+    console.log("If you want to create your study cards enter the following:");
     console.log("Basic: node cards.js basic [amount of cards]");
     console.log("Cloze: node cards.js cloze [amount of cards]");
     console.log("--------------------------------------------");
@@ -48,8 +45,25 @@ function intro() {
 function readCards(readThis) {
     fs.readFile(readThis, "utf8", function(error, data) {
         var cardsObj = JSON.parse(data);
-        cards = cardsObj.cards;
-        console.log(cards);
+        for (var i = 0; i < cardsObj.cards.length; i++) {
+            cards.push(cardsObj.cards[i])
+        }
+        cardCount = cards.length;
+        switch (runThis) {
+            case "basic":
+                studyBasic();
+                break;
+            case "cloze":
+                studyCloze();
+        }
+    });
+}
+
+function writeCards(writeThis) {
+    fs.writeFile(writeThis, '{ "cards":' + JSON.stringify(cards) + '}', function(err) {
+        if (err) {
+            return console.log(err);
+        }
     });
 }
 
@@ -63,7 +77,6 @@ function BasicCard(question, answer) {
 function ClozeCard(question, answer) {
     this.question = question;
     this.answer = answer;
-
     this.cloze = this.question.replace(answer, "...");
 }
 
@@ -88,12 +101,7 @@ function clozeCard() {
 
     } else {
         count = 0;
-        // fs.writeFile("cloze.json", "{" + cards + "}", function(err) {
-        //     if (err) {
-        //         return console.log(err);
-        //     }
-        //     console.log("cloze.json was updated!");
-        // });
+        writeCards("cloze.json")
         studyCloze();
     }
 };
@@ -154,6 +162,7 @@ function basicCard() {
 
     } else {
         count = 0;
+        writeCards("basic.json")
         studyBasic();
     }
 };
@@ -169,7 +178,7 @@ function studyBasic() {
             message: cards[count].question,
         }]).then(function(result) {
 
-            if (result.userResponse.toLowerCase() === cards[count].answer.toLowerCase()) {
+            if (result.userResponse === cards[count].answer) {
                 score++;
                 console.log("--------------------------------------------");
                 console.log("Correct!");

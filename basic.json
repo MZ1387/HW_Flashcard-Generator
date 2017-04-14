@@ -1,9 +1,1 @@
-{
-  "cards":[
-  {"question": "What's the sum of all the numbers on a roulette wheel?","answer": "666"},
-  {"question": "Do horses vomit?","answer": "No"},
-  {"question": "How many nipples does a female opossum have?","answer": "13"},
-  {"question": "What rare color does one in every 4 million lobsters turn?","answer": "Blue"},
-  {"question": "What does the Q in Q-tips stand for?","answer": "Quality"}
-  ]
-}
+{ "cards":[{"question":"i love","answer":"you"},{"question":"you love","answer":"me"},{"question":"i love","answer":"lucy"}]}

@@ -1,9 +1,1 @@
-{
-  "cards":[
-  {"question": "cloze","answer": ""},
-  {"question": "","answer": ""},
-  {"question": "","answer": ""},
-  {"question": "","answer": ""},
-  {"question": "","answer": ""}
-  ]
-}
+{ "cards":[{"question":"Who are you","answer":"Who","cloze":"... are you"},{"question":"Where are you","answer":"you","cloze":"Where are ..."},{"question":"when is it","answer":"is","cloze":"when ... it"}]}

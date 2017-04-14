@@ -69,18 +69,24 @@ function writeCards(writeThis) {
 
 // BasicCard constructor function
 function BasicCard(question, answer) {
-    this.question = question;
-    this.answer = answer;
+    this.question = question.toLowerCase();
+    this.answer = answer.toLowerCase();
 }
 
 // ClozeCard constructor function
 function ClozeCard(question, answer) {
-    this.question = question;
-    this.answer = answer;
+    this.question = question.toLowerCase();
+    this.answer = answer.toLowerCase();
     this.cloze = this.question.replace(answer, "...");
 }
 
 function clozeCard() {
+
+    if(count === 0) {
+      console.log("--------------------------------------------");
+      console.log("Let's create some cards!");
+      console.log("--------------------------------------------");
+    }
 
     if (count < cardCount) {
 
@@ -116,7 +122,7 @@ function studyCloze() {
             message: cards[count].cloze,
         }]).then(function(result) {
 
-            if (result.userResponse === cards[count].answer) {
+            if (result.userResponse.toLowerCase() === cards[count].answer) {
                 score++;
                 console.log("--------------------------------------------");
                 console.log("Correct! " + "'" + cards[count].question + "'");
@@ -134,7 +140,7 @@ function studyCloze() {
 
     } else {
         console.log("--------------------------------------------");
-        console.log("Study time is over! \nYou got " + score + " out of " + cardCount + " correct.");
+        console.log("No cards left! \nYou got " + score + " out of " + cardCount + " correct.");
         console.log("--------------------------------------------");
     }
 
@@ -142,6 +148,12 @@ function studyCloze() {
 
 
 function basicCard() {
+
+    if(count === 0) {
+      console.log("--------------------------------------------");
+      console.log("Let's create some cards!");
+      console.log("--------------------------------------------");
+    }
 
     if (count < cardCount) {
 
@@ -178,7 +190,7 @@ function studyBasic() {
             message: cards[count].question,
         }]).then(function(result) {
 
-            if (result.userResponse === cards[count].answer) {
+            if (result.userResponse.toLowerCase() === cards[count].answer) {
                 score++;
                 console.log("--------------------------------------------");
                 console.log("Correct!");
@@ -196,7 +208,7 @@ function studyBasic() {
 
     } else {
         console.log("--------------------------------------------");
-        console.log("Study time is over! \nYou got " + score + " out of " + cardCount + " correct.");
+        console.log("No cards left! \nYou got " + score + " out of " + cardCount + " correct.");
         console.log("--------------------------------------------");
     }
 
